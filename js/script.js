@@ -43,8 +43,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Timer
 
-    const deadLine = '2024-05-11';
-
+    const deadLine = '2024-05-11';  // задаем конечную дату. она так же может приходить из разных источников.
+    
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()); // общее кол-во милисек, между сейчас (начало отсчета) и конечной датой
         const days = Math.floor(t / (1000 * 60 * 60 * 24)); // вычисляем кол-во дней до конечной даты с округлением - общее кол-во делим на кол-во милисек в 1 дне
@@ -64,6 +64,39 @@ window.addEventListener('DOMContentLoaded', () => {
         // return {'total': t, days.hours, minutes, seconds}    
     }
 
+    function getZero(num) {
+        if (num >= 0 && num < 10) {
+            return `0${num}`;
+        } else {
+            return num;
+        }
+    }  // функция-попощник, подставляет 0 перед числом если оно однозначное
 
+    function setClock(selector, endtime) {
+        const timer = document.querySelector(selector);
+        const days = timer.querySelector('#days');
+        const hours = timer.querySelector('#hours');
+        const minutes = timer.querySelector('#minutes');
+        const seconds = timer.querySelector('#seconds');
+
+        const timeInterval = setInterval(updateClock, 1000);  // устанавливаем интервал чтобы таймер обновлялся каждую секунду
+
+        updateClock();  // инициализация функции, первый вызов вручную чтобы сразу вставала нужная дата, а не висело секунду до запуска сетинтервала то, что в верстке
+        
+        function updateClock() {
+            const t = getTimeRemaining(endtime);  // получаем сюда объект с вычисленными величинами из этой функции
+
+            days.innerHTML = getZero(t.days);  
+            hours.innerHTML = getZero(t.hours);
+            minutes.innerHTML = getZero(t.minutes);
+            seconds.innerHTML = getZero(t.seconds);  // помещаем их в полученные селекторы
+
+            if(t.total <= 0) {
+                clearInterval(timeInterval);  // останавливаем таймер когда истечет конечная дата
+            }
+        }
+    }
+
+    setClock('.timer', deadLine);
 });
 
