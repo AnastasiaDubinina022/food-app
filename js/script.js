@@ -79,7 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             return num;
         }
-    }  // функция-попощник, подставляет 0 перед числом если оно однозначное
+    }  // функция-помощник, подставляет 0 перед числом если оно однозначное
 
     function setClock(selector, endtime) {
         const timer = document.querySelector(selector);
@@ -107,5 +107,51 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadLine);
+
+    // Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]');
+    const modalCloseBtn = document.querySelector('[data-close]');
+    const modal = document.querySelector('.modal');
+
+    function openModal() {
+        modalTrigger.forEach((item) => {
+            item.addEventListener('click', () => {
+                //modal.classList.toggle('show');
+                modal.classList.add('show');
+                modal.classList.remove('hide');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+    }
+
+    openModal();
+
+    function closeModal() {
+        //modal.classList.toggle('show');
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        closeModal();
+    }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.code === 'Escape' && modal.classList.contains('show')) {
+        closeModal();
+    } // если нажата клавиша esc при открытом модальном окне, то тогда вызываем функцию закрытия, при закрытом окне она не будет срабатывать.
+});
+
+
+    
+    
+
 });
 
