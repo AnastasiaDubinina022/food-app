@@ -147,12 +147,12 @@ window.addEventListener('DOMContentLoaded', () => {
     } // если нажата клавиша esc при открытом модальном окне, то тогда вызываем функцию закрытия, при закрытом окне она не будет срабатывать.
     });
 
-    const modalTimerId = setTimeout(openModal, 5000); // открываем модалку через 5 сек после захода пользователя на страницу
+    // const modalTimerId = setTimeout(openModal, 5000); // открываем модалку через 5 сек после захода пользователя на страницу
     
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
             openModal();
-            window.removeEventListener('scroll', showModalByScroll);
+            window.removeEventListener('scroll', showModalByScroll); // удаляем обработчик события после того как он отработал 1 раз, для того чтобы больше окно не высвечивалось при повторной прогрутке в конец страницы.
 
         } // window.scrollY = window.pageYOffset (depricated)
           // document.documentElement.scrollHeight -1 = в конце добавляем -1px иначе не срабатывает - это баг, возможно связанный с некоторыми версиями браузеров или ограничениями некоторых мониторов. т.е. окно срабатывает на 1 px раньше самой нижней точки прокрутки, в этом ничего страшного.
@@ -160,5 +160,73 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', showModalByScroll);
 
+    // используем классы для карточек
+
+    class MenuCard {
+        constructor(src, alt, title, descr, price, parentSelector) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.parent = document.querySelector(parentSelector); // получаем селектор, куда будем вставлять нашу верстку, можно сделать это и в методе рендер
+            this.transfer = 90; // пока пишем фиксированный курс доллара к рублю
+            this.changeToRUB(); // можем здесь вызвать метод конвертации валюты, на моменте конструирования, или можем тоже в рендере сделать это
+        }
+
+        changeToRUB() {
+            this.price = +this.price * this.transfer;  // +проверка на дурака, если сюда передадут строку чтобы она трансформировалась в число. 
+        }
+
+        render() {
+            const element = document.createElement('div');
+
+            console.log(this.src);
+            element.innerHTML = `
+                <div class="menu__item">
+                    <img src=${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.price}</span> руб/день</div>
+                    </div>
+                </div>
+            `;
+            this.parent.append(element);
+        }
+    }
+
+    // const fitnessMenu = new MenuCard('');
+    // fitnessMenu.render();                   
+    // это обычный синтаксис создания объекта. 
+
+    // ниже исползуем более короткий - подходит для случаев, когда нам нужен объект только один раз здесь и сейчас, он отработает и удалится, и на него не останется никаких ссылок.
+
+    new MenuCard( 
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        8,
+        '.menu .container'
+    ).render();
+    new MenuCard( 
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        12,
+        '.menu .container'
+    ).render();
+    new MenuCard( 
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        10,
+        '.menu .container'
+    ).render(); 
 });
 
