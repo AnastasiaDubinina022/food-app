@@ -111,7 +111,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // Modal
 
     const modalTrigger = document.querySelectorAll('[data-modal]');
-    const modalCloseBtn = document.querySelector('[data-close]');
     const modal = document.querySelector('.modal');
 
     function openModal() {
@@ -133,10 +132,8 @@ window.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
     }
 
-    modalCloseBtn.addEventListener('click', closeModal);
-
     modal.addEventListener('click', (event) => {
-    if (event.target === modal) {
+    if (event.target === modal || event.target.getAttribute('data-close') == '') {
         closeModal();
     }
     });
@@ -147,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
     } // если нажата клавиша esc при открытом модальном окне, то тогда вызываем функцию закрытия, при закрытом окне она не будет срабатывать.
     });
 
-    // const modalTimerId = setTimeout(openModal, 5000); // открываем модалку через 5 сек после захода пользователя на страницу
+    const modalTimerId = setTimeout(openModal, 50000); // открываем модалку через 5 сек после захода пользователя на страницу
     
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
@@ -241,7 +238,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: 'Загрузка',
+        loading: '../img/form/spinner.svg',     // вместо сообщения просто можно прописать путь картинки
         success: 'Спасибо! Скоро мы с вами свяжемся.',
         failure: 'Что-то пошло не так...'
     };
@@ -254,9 +251,12 @@ window.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
 
-            const statusMessage = document.createElement('div');
-            statusMessage.classList.add('status');
-            statusMessage.textContent = message.loading;
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;  // устанавливаем изображение спиннера
+            statusMessage.style.cssText = `       
+                display: block;
+                margin: 0 auto;
+            `;                    // делаем спиннер по центру (лучше создать css-класс и добавлять класс, а не инлайн-стили)
             form.append(statusMessage);
 
             const request = new XMLHttpRequest();
@@ -278,17 +278,41 @@ window.addEventListener('DOMContentLoaded', () => {
             request.addEventListener('load', () => {
                 if (request.status === 200) {
                     console.log(request.response);
-                    statusMessage.textContent = message.success;
+                    showThanksModal(message.success);
                     form.reset();
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    }, 3000);
+                    statusMessage.remove();
                 } else {
-                    statusMessage.textContent = message.failure;
+                    showThanksModal(message.failure);
                 }
             });
 
         });
     };
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+
+        thanksModal.innerHTML = `
+            <div class="modal__content">                
+                <div class="modal__close" data-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
 });
 
