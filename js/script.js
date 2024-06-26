@@ -257,7 +257,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 display: block;
                 margin: 0 auto;
             `;                    // делаем спиннер по центру (лучше создать css-класс и добавлять класс, а не инлайн-стили)
-            form.append(statusMessage);
+            
+            // form.append(statusMessage);
+            form.insertAdjacentElement('afterend', statusMessage);
 
             const request = new XMLHttpRequest();
             request.open('POST', 'server.php');
