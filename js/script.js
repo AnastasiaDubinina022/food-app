@@ -263,20 +263,18 @@ window.addEventListener('DOMContentLoaded', () => {
     
             const formData = new FormData(form);
 
-            // const object = {};    // объект формдаты нельзя преобразвать сразу в джейсон, поэтому создаем новый объект из формдаты
-            // formData.forEach(function(value, key) {
-            //     object[key] = value;
-            // });
-
-            // const json = JSON.stringify(object);  // этот объект преобразуем в джейсон
+            const object = {};    // объект формдаты нельзя преобразовать сразу в джейсон, поэтому создаем новый объект из формдаты
+            formData.forEach(function(value, key) {
+                object[key] = value;
+            });
 
             fetch('server.php', {
                 method: 'POST',
-                // headers: {
-                //     'Content-type': 'application/json'   // здесь отправляем формдату поэтому не нужен заголовок
-                // },
-                body: formData
-            }).then((data) => data.text())   // преобразуеи ответ для нормального отображения в консоль
+                headers: {
+                    'Content-type': 'application/json'  
+                },
+                body: JSON.stringify(object)  // наш объект преобразуем в джейсон для отправки
+            }).then((data) => data.text())    // преобразуем ответ для нормального отображения в консоль
             .then((data) => {
                 console.log(data);
                 showThanksModal(message.success);
