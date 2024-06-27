@@ -260,34 +260,32 @@ window.addEventListener('DOMContentLoaded', () => {
             
             // form.append(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage);
-
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
-            request.setRequestHeader('Content-type', 'application/json');  // Для джейсона нужен заголовок, кодировку можно не указывать
     
             const formData = new FormData(form);
 
-            const object = {};    // объект формдаты нельзя преобразвать сразу в джейсон, поэтому создаем новый объект из формдаты
-            formData.forEach(function(value, key) {
-                object[key] = value;
+            // const object = {};    // объект формдаты нельзя преобразвать сразу в джейсон, поэтому создаем новый объект из формдаты
+            // formData.forEach(function(value, key) {
+            //     object[key] = value;
+            // });
+
+            // const json = JSON.stringify(object);  // этот объект преобразуем в джейсон
+
+            fetch('server.php', {
+                method: 'POST',
+                // headers: {
+                //     'Content-type': 'application/json'   // здесь отправляем формдату поэтому не нужен заголовок
+                // },
+                body: formData
+            }).then((data) => data.text())   // преобразуеи ответ для нормального отображения в консоль
+            .then((data) => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
             });
-
-            const json = JSON.stringify(object);  // этот объект преобразуем в джейсон
-
-            request.send(json);  // отрпавляем на сервер джейсон
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                    statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
-            });
-
         });
     };
 
@@ -308,7 +306,6 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
 
         document.querySelector('.modal').append(thanksModal);
-
         setTimeout(() => {
             thanksModal.remove();
             prevModalDialog.classList.add('show');
@@ -316,5 +313,7 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }, 4000);
     }
-});
+
+    
+});                                           
 
