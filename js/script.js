@@ -244,10 +244,22 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     forms.forEach(item => {
-        postData(item);
+        bindPostData(item);
     });
 
-    function postData(form) {   // передаем форму аргументом, удобно внутри на неё повесить обработчик
+    const postData = async (url, data) => {   // отвечает за постинг данных
+        const res = await fetch(url, {   // ждем результата работы запроса, прежде чем продолжить код, чтобы не было ошибки изза того что сервер ещё не успед ответить и в перем. ничего еще не записалось
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'  
+            },
+            body: data 
+        });
+
+        return await res.json();  // возвращаем промис сразу переводим результат в обычный объект, потом ниже сможем его обработать через then/catch
+    }                             // тоже ждем результата работы метода прежде чем ретёрнить его
+
+    function bindPostData(form) {   // привязка постинга. передаем форму аргументом, удобно внутри на неё повесить обработчик
         form.addEventListener('submit', (event) => {
             event.preventDefault();
 
@@ -263,18 +275,15 @@ window.addEventListener('DOMContentLoaded', () => {
     
             const formData = new FormData(form);
 
-            const object = {};    // объект формдаты нельзя преобразовать сразу в джейсон, поэтому создаем новый объект из формдаты
-            formData.forEach(function(value, key) {
-                object[key] = value;
-            });
+            // const object = {};    // объект формдаты нельзя преобразовать сразу в джейсон, поэтому создаем новый объект из формдаты
+            // formData.forEach(function(value, key) {
+            //     object[key] = value;
+            // });
 
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'  
-                },
-                body: JSON.stringify(object)  // наш объект преобразуем в джейсон для отправки
-            }).then((data) => data.text())    // преобразуем ответ для нормального отображения в консоль
+            // более элегантный способ преобразовать формдату в джейсон:
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));  // формдату трансформируем в матрицу и сразу обратно в объект, после чего преобразуем объект в джейсон
+
+            postData('http://localhost:3000/requests', json)  // отсюда вернется промис который сможем нормально обработать с помощью then/catch
             .then((data) => {
                 console.log(data);
                 showThanksModal(message.success);
@@ -312,6 +321,5 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-    
 });                                           
 
