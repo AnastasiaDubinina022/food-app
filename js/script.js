@@ -217,6 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
     // Альтернативный метод создания карточек из базы данных - не используя классы, а формируя верстку на лету. Например, если нам не нужен шаблон класса, а элементы будут создаваться 1 раз 
 
     // getResource('http://localhost:3000/menu')
@@ -242,6 +243,17 @@ window.addEventListener('DOMContentLoaded', () => {
     //         document.querySelector('.menu .container').append(element);
     //     })
     // }
+
+
+    // Использование библиотеки axios
+
+    // axios.get('http://localhost:3000/menu')
+    // .then(data => {
+    //     data.data.forEach(({img, altimg, title, descr, price}) => {   
+    //         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    //     });
+    // });
+
 
 
     // Forms
