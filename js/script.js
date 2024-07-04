@@ -200,7 +200,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const getResourse = async (url) => {  // гет запрос поэтому передаем только ссылку на базу
+    const getResource = async (url) => {  // гет запрос поэтому передаем только ссылку на базу
         const res = await fetch(url);     // для гет запроса не нужны доп настройки, просто получаем данные
 
         if (!res.ok) {                    // если в запросе что-то не так пошло, то выкидываем ошибку вручную и сработает блок .catch
@@ -210,12 +210,38 @@ window.addEventListener('DOMContentLoaded', () => {
         return await res.json();  // возвращаем промис сразу переводим результат в обычный объект
     } 
 
-    getResourse('http://localhost:3000/menu')
+    getResource('http://localhost:3000/menu')
     .then(data => {
         data.forEach(({img, altimg, title, descr, price}) => {    // на месте деструктуризируем каждый объект
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         });
     });
+
+    // Альтернативный метод создания карточек из базы данных - не используя классы, а формируя верстку на лету. Например, если нам не нужен шаблон класса, а элементы будут создаваться 1 раз 
+
+    // getResource('http://localhost:3000/menu')
+    // .then(data => createCard(data));
+
+    // function createCard(data) {
+    //     data.forEach(({img, altimg, title, descr, price}) => {
+    //         const element = document.createElement('div');
+
+    //         element.classList.add('menu__item');
+
+    //         element.innerHTML = `
+    //             <img src=${img} alt=${altimg}>
+    //             <h3 class="menu__item-subtitle">${title}</h3>
+    //             <div class="menu__item-descr">${descr}</div>
+    //             <div class="menu__item-divider"></div>
+    //             <div class="menu__item-price">
+    //                 <div class="menu__item-cost">Цена:</div>
+    //                 <div class="menu__item-total"><span>${price}</span> руб/день</div>
+    //             </div>
+    //         `;
+
+    //         document.querySelector('.menu .container').append(element);
+    //     })
+    // }
 
 
     // Forms
