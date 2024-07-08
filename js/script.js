@@ -346,57 +346,127 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Slider v.1
 
-    const counter = document.querySelector('.offer__slider-counter');
-    const current = counter.querySelector('#current');
-    const total = counter.querySelector('#total');
+    const current = document.querySelector('#current');
+    const total = document.querySelector('#total');
     const slides = document.querySelectorAll('.offer__slide');
     const prev = document.querySelector('.offer__slider-prev');
     const next = document.querySelector('.offer__slider-next');
+    const slidesWrapper = document.querySelector('.offer__slider-wrapper');
+    const slidesField = document.querySelector('.offer__slider-inner');
+    const width = window.getComputedStyle(slidesWrapper).width;   // '650px'
     let slideIndex = 0;
 
-    total.textContent = getZero(slides.length);
+    // total.textContent = getZero(slides.length);
 
-    hideSlides();
-    showSlide(slideIndex);
+    // hideSlides();
+    // showSlide(slideIndex);
     
-    function hideSlides(){
-        slides.forEach(item => {
-            item.classList.remove('show', 'fade');
-            item.classList.add('hide');
-        });
-    }
+    // function hideSlides(){
+    //     slides.forEach(item => {
+    //         item.classList.remove('show', 'fade');
+    //         item.classList.add('hide');
+    //     });
+    // }
 
-    function showSlide(i) {
-        slides[i].classList.add('show', 'fade');
-        slides[i].classList.remove('hide');
-        current.textContent = getZero(i + 1);
-    }
+    // function showSlide(i) {
+    //     slides[i].classList.add('show', 'fade');
+    //     slides[i].classList.remove('hide');
+    //     current.textContent = getZero(i + 1);
+    // }
 
-    function calculateSlideIndex(i) {
-        if (i === slides.length) {
-            slideIndex = 0;
+    // function calculateSlideIndex(i) {
+    //     if (i === slides.length) {
+    //         slideIndex = 0;
+    //     }
+
+    //     if (i < 0) {
+    //         slideIndex = slides.length - 1;
+    //     }
+
+    //     showSlide(slideIndex);
+    // }
+
+    // prev.addEventListener('click', () => {
+    //     slideIndex--;
+    //     hideSlides();
+    //     calculateSlideIndex(slideIndex);
+    // });
+
+    // next.addEventListener('click', () => {
+    //     slideIndex++;
+    //     hideSlides();
+    //     calculateSlideIndex(slideIndex);
+    // });
+
+    
+    // Slider v.2 (carousel)
+
+    let offset = 0;  // отступ, на который будем двигать поле слайдеров, изначальная позиция 0.
+    
+    setTotal();
+    setSlideIndex();
+
+    function setTotal() {
+        if (slides.length < 10) {
+            total.textContent = `0${slides.length}`;
+        } else {
+            total.textContent  = slides.length;
         }
-
-        if (i < 0) {
-            slideIndex = slides.length - 1;
-        }
-
-        showSlide(slideIndex);
     }
 
-    prev.addEventListener('click', () => {
-        slideIndex--;
-        hideSlides();
-        calculateSlideIndex(slideIndex);
+    function setSlideIndex() {
+        if (slides.length < 10) {
+            current.textContent = `0${slideIndex + 1}`;
+        } else {
+            current.textContent = slideIndex + 1;
+        }
+    }
+
+    slidesField.style.width = 100 * slides.length + '%';  // устанавливаем ширину всего поля слайдов (4 слайда = 400%)
+    slidesField.style.display = 'flex';   // выстраиваем слайды в строку
+    slidesField.style.transition = '0.5s all';  
+
+    slidesWrapper.style.overflow = 'hidden';  // скрываем остальные слайды, выходящие за предел окна
+
+    slides.forEach(slide => {          
+        slide.style.width = width;  // убеждаемся что все слайды будут одинаковой ширины и поместятся в поле
     });
 
     next.addEventListener('click', () => {
-        slideIndex++;
-        hideSlides();
-        calculateSlideIndex(slideIndex);
+        if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {  // если отступ равен общей ширине скрытых слайдов (650 * 3), т.е. если мы уже на последнем слайде, возвращаем отступ в исходное 0 - т.е. возвращаемся на первый слайд
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);  // в остальных случаях добавляем отступ равный ширине слайда
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;  // сдвигаем поле влево на ширину отступа
+
+        if (slideIndex == slides.length - 1) {
+            slideIndex = 0;
+        } else {
+            slideIndex++;
+        }
+
+        setSlideIndex();
     });
 
-    
- 
+    prev.addEventListener('click', () => {
+        if (offset == 0) {                 // если отступ равен 0 - мы на первом слайде
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1);  // то устанавливаем оступ равный ширине всех скрытых слайдов - т.е. перелистываем на последний слайд
+        } else {
+            offset -= +width.slice(0, width.length - 2);  // в остальных случаях отнимаем отступ равный ширине слайда
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;  
+
+        if (slideIndex == 0) {
+            slideIndex = slides.length - 1;
+        } else {
+            slideIndex--;
+        }
+
+        setSlideIndex();
+    });
+
 });                                           
 
