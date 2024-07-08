@@ -349,6 +349,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const current = document.querySelector('#current');
     const total = document.querySelector('#total');
     const slides = document.querySelectorAll('.offer__slide');
+    const slider = document.querySelector('.offer__slider');
     const prev = document.querySelector('.offer__slider-prev');
     const next = document.querySelector('.offer__slider-next');
     const slidesWrapper = document.querySelector('.offer__slider-wrapper');
@@ -423,7 +424,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     slidesField.style.width = 100 * slides.length + '%';  // устанавливаем ширину всего поля слайдов (4 слайда = 400%)
-    slidesField.style.display = 'flex';   // выстраиваем слайды в строку
+    slidesField.style.display = 'flex';         // выстраиваем слайды в строку
     slidesField.style.transition = '0.5s all';  
 
     slidesWrapper.style.overflow = 'hidden';  // скрываем остальные слайды, выходящие за предел окна
@@ -432,6 +433,36 @@ window.addEventListener('DOMContentLoaded', () => {
         slide.style.width = width;  // убеждаемся что все слайды будут одинаковой ширины и поместятся в поле
     });
 
+    slider.style.position = 'relative'; 
+
+    function transformSlidesField() {
+        slidesField.style.transform = `translateX(-${offset}px)`;  // сдвигаем поле слайдов на ширину отступа
+    }
+
+    const indicators = document.createElement('ol');
+    const dots = [];  // создаем настоящий массив чтобы запушить в него точки и затем навесить им класс активности
+
+    indicators.classList.add('carousel-indicators');
+    slider.append(indicators);
+
+    for (let i = 0; i < slides.length; i++) {    // создаем точки 
+        const dot = document.createElement('li');
+        dot.setAttribute('data-slide-to', i);
+        dot.classList.add('dot');
+
+        if (i == 0) {
+            dot.style.opacity = 1;
+        }
+
+        indicators.append(dot);
+        dots.push(dot);
+    };
+
+    function displayActiveDot() {  
+        dots.forEach(dot => dot.style.opacity = '0.5');
+        dots[slideIndex].style.opacity = 1;
+    }
+
     next.addEventListener('click', () => {
         if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {  // если отступ равен общей ширине скрытых слайдов (650 * 3), т.е. если мы уже на последнем слайде, возвращаем отступ в исходное 0 - т.е. возвращаемся на первый слайд
             offset = 0;
@@ -439,7 +470,7 @@ window.addEventListener('DOMContentLoaded', () => {
             offset += +width.slice(0, width.length - 2);  // в остальных случаях добавляем отступ равный ширине слайда
         }
 
-        slidesField.style.transform = `translateX(-${offset}px)`;  // сдвигаем поле влево на ширину отступа
+        transformSlidesField();  
 
         if (slideIndex == slides.length - 1) {
             slideIndex = 0;
@@ -448,6 +479,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         setSlideIndex();
+        displayActiveDot();
     });
 
     prev.addEventListener('click', () => {
@@ -457,7 +489,7 @@ window.addEventListener('DOMContentLoaded', () => {
             offset -= +width.slice(0, width.length - 2);  // в остальных случаях отнимаем отступ равный ширине слайда
         }
 
-        slidesField.style.transform = `translateX(-${offset}px)`;  
+        transformSlidesField();   
 
         if (slideIndex == 0) {
             slideIndex = slides.length - 1;
@@ -466,6 +498,20 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         setSlideIndex();
+        displayActiveDot();
+    });
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', (event) => {
+            const slideTo = event.target.getAttribute('data-slide-to');
+
+            slideIndex = +slideTo;
+            offset = +width.slice(0, width.length - 2) * (slideTo);
+
+            transformSlidesField();  
+            setSlideIndex();
+            displayActiveDot();
+        });
     });
 
 });                                           
