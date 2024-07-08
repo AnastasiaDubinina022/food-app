@@ -350,52 +350,53 @@ window.addEventListener('DOMContentLoaded', () => {
     const current = counter.querySelector('#current');
     const total = counter.querySelector('#total');
     const slides = document.querySelectorAll('.offer__slide');
-
+    const prev = document.querySelector('.offer__slider-prev');
+    const next = document.querySelector('.offer__slider-next');
     let slideIndex = 0;
+
     total.textContent = getZero(slides.length);
 
     hideSlides();
-    showSlide();
+    showSlide(slideIndex);
     
     function hideSlides(){
         slides.forEach(item => {
             item.classList.remove('show', 'fade');
             item.classList.add('hide');
-        })
+        });
     }
 
-    function showSlide(i = slideIndex) {
-        current.textContent = getZero(slideIndex + 1);
+    function showSlide(i) {
         slides[i].classList.add('show', 'fade');
         slides[i].classList.remove('hide');
+        current.textContent = getZero(i + 1);
     }
 
-    counter.addEventListener('click', (event) => {
-        if (event.target.classList.contains('offer__slider-next')) {
-            if (slideIndex === slides.length - 1) {
-                slideIndex = 0;
-            } else {
-                slideIndex++;
-            }   
+    function calculateSlideIndex(i) {
+        if (i === slides.length) {
+            slideIndex = 0;
         }
 
-        if (event.target.classList.contains('offer__slider-prev')) {
-            if (slideIndex === 0) {
+        if (i < 0) {
+            slideIndex = slides.length - 1;
+        }
 
-                slideIndex = slides.length - 1;
-            } else {
-                slideIndex--;
-            }
-        } 
-        
-        hideSlides();
         showSlide(slideIndex);
+    }
+
+    prev.addEventListener('click', () => {
+        slideIndex--;
+        hideSlides();
+        calculateSlideIndex(slideIndex);
     });
 
+    next.addEventListener('click', () => {
+        slideIndex++;
+        hideSlides();
+        calculateSlideIndex(slideIndex);
+    });
 
     
-
-
-    
+ 
 });                                           
 
