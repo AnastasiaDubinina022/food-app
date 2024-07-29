@@ -1,7 +1,4 @@
-function timer() {
-     // Timer
-
-     const deadLine = '2024-05-11';  // задаем конечную дату. она так же может приходить из разных источников.
+function timer(id, deadLine) {
     
      function getTimeRemaining(endtime) {
          let days, hours, minutes, seconds;
@@ -64,7 +61,7 @@ function timer() {
          }
      }
  
-     setClock('.timer', deadLine);
+     setClock(id, deadLine);
 }
 
-module.exports = timer;
+export default timer;

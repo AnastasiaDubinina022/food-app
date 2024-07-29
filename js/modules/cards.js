@@ -1,3 +1,5 @@
+import {getResource} from "../services/services";
+
 function cards() {
      // используем классы для карточек
 
@@ -41,16 +43,6 @@ function cards() {
             this.parent.append(element);
         }
     }
-
-    const getResource = async (url) => {  // гет запрос поэтому передаем только ссылку на базу
-        const res = await fetch(url);     // для гет запроса не нужны доп настройки, просто получаем данные
-
-        if (!res.ok) {                    // если в запросе что-то не так пошло, то выкидываем ошибку вручную и сработает блок .catch
-            throw new Error(`Could not fetch ${url}, status ${res.status}` );  // выкинуть ошибку
-        }
-
-        return await res.json();  // возвращаем промис сразу переводим результат в обычный объект
-    } 
 
     getResource('http://localhost:3000/menu')
     .then(data => {
@@ -97,4 +89,4 @@ function cards() {
     // });
 }
 
-module.exports = cards;
+export default cards;

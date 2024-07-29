@@ -1,46 +1,49 @@
-function modal() {
-    
-    // Modal
+function openModal(modalSelector, modalTimerId) {
+    const modal = document.querySelector(modalSelector);
 
-    const modalTrigger = document.querySelectorAll('[data-modal]');
-    const modal = document.querySelector('.modal');
+    //modal.classList.toggle('show');
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
 
-    function openModal() {
-        //modal.classList.toggle('show');
-        modal.classList.add('show');
-        modal.classList.remove('hide');
-        document.body.style.overflow = 'hidden'; 
+    console.log(modalTimerId);  // на всякий случай. придет в консоль 1 - это как раз уникальный идентификатор таймера - рандомное значение, контролируемое браузером.
+    if (modalTimerId) {
         clearInterval(modalTimerId); // ниже есть сеттаймаут открывающий модалку через 5 сек как пользователь зашел. Здесь мы его очищаем в том случае, если пользователь еще раньше сам открыл модалку по нажатию кнопки и уже его видел, чтобы повторно оно не выскакивало и не бесило.
     }
+}
+
+function closeModal(modalSelector) {
+    const modal = document.querySelector(modalSelector);
+
+    //modal.classList.toggle('show');
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
+}
+
+function modal(triggerSelector, modalSelector, modalTimerId) {   
+    const modalTrigger = document.querySelectorAll(triggerSelector);
+    const modal = document.querySelector(modalSelector);
 
     modalTrigger.forEach((item) => {
-        item.addEventListener('click', openModal);
+        item.addEventListener('click', () => openModal(modalSelector, modalTimerId)); // поскольку при передаче аргумента мы вызываем функцию, а здесь этого делать нельзя, оборачиваем её в стрелочную, тогда будет работать как положено - вызываться колбек только после клика.
     });
-
-    function closeModal() {
-        //modal.classList.toggle('show');
-        modal.classList.add('hide');
-        modal.classList.remove('show');
-        document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
-    }
 
     modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.getAttribute('data-close') == '') {
-        closeModal();
+        closeModal(modalSelector);
     }
     });
 
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Escape' && modal.classList.contains('show')) {
-        closeModal();
+        closeModal(modalSelector);
     } // если нажата клавиша esc при открытом модальном окне, то тогда вызываем функцию закрытия, при закрытом окне она не будет срабатывать.
     });
-
-    const modalTimerId = setTimeout(openModal, 50000); // открываем модалку через 5 сек после захода пользователя на страницу
     
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
-            openModal();
+            openModal(modalSelector, modalTimerId);
             window.removeEventListener('scroll', showModalByScroll); // удаляем обработчик события после того как он отработал 1 раз, для того чтобы больше окно не высвечивалось при повторной прогрутке в конец страницы.
 
         } // window.scrollY = window.pageYOffset (depricated)
@@ -50,4 +53,6 @@ function modal() {
     window.addEventListener('scroll', showModalByScroll);
 }
 
-module.exports = modal;
+export default modal;
+export {openModal};
+export {closeModal};

@@ -113,4 +113,4 @@ function calc() {
     getInputInformation('#age');
 }
 
-module.exports = calc;
+export default calc;

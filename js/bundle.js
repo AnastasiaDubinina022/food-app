@@ -1,12 +1,17 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./js/modules/calc.js":
 /*!****************************!*\
   !*** ./js/modules/calc.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 function calc() {
     
     // Calc
@@ -122,7 +127,7 @@ function calc() {
     getInputInformation('#age');
 }
 
-module.exports = calc;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calc);
 
 /***/ }),
 
@@ -130,7 +135,14 @@ module.exports = calc;
 /*!*****************************!*\
   !*** ./js/modules/cards.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
+
 
 function cards() {
      // используем классы для карточек
@@ -176,17 +188,7 @@ function cards() {
         }
     }
 
-    const getResource = async (url) => {  // гет запрос поэтому передаем только ссылку на базу
-        const res = await fetch(url);     // для гет запроса не нужны доп настройки, просто получаем данные
-
-        if (!res.ok) {                    // если в запросе что-то не так пошло, то выкидываем ошибку вручную и сработает блок .catch
-            throw new Error(`Could not fetch ${url}, status ${res.status}` );  // выкинуть ошибку
-        }
-
-        return await res.json();  // возвращаем промис сразу переводим результат в обычный объект
-    } 
-
-    getResource('http://localhost:3000/menu')
+    (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResource)('http://localhost:3000/menu')
     .then(data => {
         data.forEach(({img, altimg, title, descr, price}) => {    // на месте деструктуризируем каждый объект
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
@@ -231,7 +233,7 @@ function cards() {
     // });
 }
 
-module.exports = cards;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cards);
 
 
 /***/ }),
@@ -240,13 +242,19 @@ module.exports = cards;
 /*!*****************************!*\
   !*** ./js/modules/forms.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function forms() {
-    
-    // Forms
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
 
-    const forms = document.querySelectorAll('form');
+
+
+function forms(formSelector, modalTimerId) {
+    const forms = document.querySelectorAll(formSelector);
 
     const message = {
         loading: '../img/form/spinner.svg',     // вместо сообщения просто можно прописать путь картинки
@@ -257,18 +265,6 @@ function forms() {
     forms.forEach(item => {
         bindPostData(item);
     });
-
-    const postData = async (url, data) => {   // отвечает за постинг данных. После сможем ее переиспользовать с другими аргументами
-        const res = await fetch(url, {   // ждем результата работы запроса, прежде чем продолжить код, чтобы не было ошибки изза того что сервер ещё не успед ответить и в перем. ничего еще не записалось
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'  
-            },
-            body: data 
-        });
-
-        return await res.json();  // возвращаем промис сразу переводим результат в обычный объект, потом ниже сможем его обработать через then/catch
-    }                             // тоже ждем результата работы метода прежде чем ретёрнить его
 
     function bindPostData(form) {   // привязка постинга. передаем форму аргументом, удобно внутри на неё повесить обработчик
         form.addEventListener('submit', (event) => {
@@ -294,7 +290,7 @@ function forms() {
             // более элегантный способ преобразовать формдату в джейсон:
             const json = JSON.stringify(Object.fromEntries(formData.entries()));  // формдату трансформируем в матрицу и сразу обратно в объект, после чего преобразуем объект в джейсон
 
-            postData('http://localhost:3000/requests', json)  // отсюда вернется промис который сможем нормально обработать с помощью then/catch
+            (0,_services_services__WEBPACK_IMPORTED_MODULE_1__.postData)('http://localhost:3000/requests', json)  // отсюда вернется промис который сможем нормально обработать с помощью then/catch
             .then((data) => {
                 console.log(data);
                 showThanksModal(message.success);
@@ -311,7 +307,7 @@ function forms() {
         const prevModalDialog = document.querySelector('.modal__dialog');
 
         prevModalDialog.classList.add('hide');
-        openModal();
+        (0,_modal__WEBPACK_IMPORTED_MODULE_0__.openModal)('.modal', modalTimerId);
 
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
@@ -328,12 +324,12 @@ function forms() {
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            closeModal();
+            (0,_modal__WEBPACK_IMPORTED_MODULE_0__.closeModal)('.modal');
         }, 4000);
     }
 }
 
-module.exports = forms;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (forms);
 
 /***/ }),
 
@@ -341,51 +337,60 @@ module.exports = forms;
 /*!*****************************!*\
   !*** ./js/modules/modal.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function modal() {
-    
-    // Modal
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   closeModal: () => (/* binding */ closeModal),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   openModal: () => (/* binding */ openModal)
+/* harmony export */ });
+function openModal(modalSelector, modalTimerId) {
+    const modal = document.querySelector(modalSelector);
 
-    const modalTrigger = document.querySelectorAll('[data-modal]');
-    const modal = document.querySelector('.modal');
+    //modal.classList.toggle('show');
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
 
-    function openModal() {
-        //modal.classList.toggle('show');
-        modal.classList.add('show');
-        modal.classList.remove('hide');
-        document.body.style.overflow = 'hidden'; 
+    console.log(modalTimerId);  // на всякий случай. придет в консоль 1 - это как раз уникальный идентификатор таймера - рандомное значение, контролируемое браузером.
+    if (modalTimerId) {
         clearInterval(modalTimerId); // ниже есть сеттаймаут открывающий модалку через 5 сек как пользователь зашел. Здесь мы его очищаем в том случае, если пользователь еще раньше сам открыл модалку по нажатию кнопки и уже его видел, чтобы повторно оно не выскакивало и не бесило.
     }
+}
+
+function closeModal(modalSelector) {
+    const modal = document.querySelector(modalSelector);
+
+    //modal.classList.toggle('show');
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
+}
+
+function modal(triggerSelector, modalSelector, modalTimerId) {   
+    const modalTrigger = document.querySelectorAll(triggerSelector);
+    const modal = document.querySelector(modalSelector);
 
     modalTrigger.forEach((item) => {
-        item.addEventListener('click', openModal);
+        item.addEventListener('click', () => openModal(modalSelector, modalTimerId)); // поскольку при передаче аргумента мы вызываем функцию, а здесь этого делать нельзя, оборачиваем её в стрелочную, тогда будет работать как положено - вызываться колбек только после клика.
     });
-
-    function closeModal() {
-        //modal.classList.toggle('show');
-        modal.classList.add('hide');
-        modal.classList.remove('show');
-        document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
-    }
 
     modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.getAttribute('data-close') == '') {
-        closeModal();
+        closeModal(modalSelector);
     }
     });
 
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Escape' && modal.classList.contains('show')) {
-        closeModal();
+        closeModal(modalSelector);
     } // если нажата клавиша esc при открытом модальном окне, то тогда вызываем функцию закрытия, при закрытом окне она не будет срабатывать.
     });
-
-    const modalTimerId = setTimeout(openModal, 50000); // открываем модалку через 5 сек после захода пользователя на страницу
     
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
-            openModal();
+            openModal(modalSelector, modalTimerId);
             window.removeEventListener('scroll', showModalByScroll); // удаляем обработчик события после того как он отработал 1 раз, для того чтобы больше окно не высвечивалось при повторной прогрутке в конец страницы.
 
         } // window.scrollY = window.pageYOffset (depricated)
@@ -395,7 +400,9 @@ function modal() {
     window.addEventListener('scroll', showModalByScroll);
 }
 
-module.exports = modal;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
+
+
 
 /***/ }),
 
@@ -403,22 +410,26 @@ module.exports = modal;
 /*!******************************!*\
   !*** ./js/modules/slider.js ***!
   \******************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function slider() {
-    
-    // Slider v.1
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function slider({container, slide, nextArrow, prewArrow, totalCounter, currentCounter, wrapper, field}) {
 
-    const current = document.querySelector('#current');
-    const total = document.querySelector('#total');
-    const slides = document.querySelectorAll('.offer__slide');
-    const slider = document.querySelector('.offer__slider');
-    const prev = document.querySelector('.offer__slider-prev');
-    const next = document.querySelector('.offer__slider-next');
-    const slidesWrapper = document.querySelector('.offer__slider-wrapper');
-    const slidesField = document.querySelector('.offer__slider-inner');
+    const slides = document.querySelectorAll(slide);
+    const slider = document.querySelector(container);
+    const prev = document.querySelector(prewArrow);
+    const next = document.querySelector(nextArrow);
+    const current = document.querySelector(currentCounter);
+    const total = document.querySelector(totalCounter);
+    const slidesWrapper = document.querySelector(wrapper);
+    const slidesField = document.querySelector(field);
     const width = window.getComputedStyle(slidesWrapper).width;   // '650px'
     let slideIndex = 0;
+
+    // Slider v.1
 
     // total.textContent = getZero(slides.length);
 
@@ -582,7 +593,7 @@ function slider() {
     });
 }
 
-module.exports = slider;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
 
 /***/ }),
 
@@ -590,14 +601,17 @@ module.exports = slider;
 /*!****************************!*\
   !*** ./js/modules/tabs.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function tabs() {
-    // Tabs
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClass) {
 
-    const tabs = document.querySelectorAll('.tabheader__item');
-    const tabsContent = document.querySelectorAll('.tabcontent');
-    const tabsParent = document.querySelector('.tabheader__items');
+    const tabs = document.querySelectorAll(tabsSelector);
+    const tabsContent = document.querySelectorAll(tabsContentSelector);
+    const tabsParent = document.querySelector(tabsParentSelector);
 
     function hideTabContent() {
         tabsContent.forEach(item => {
@@ -606,14 +620,14 @@ function tabs() {
         });
 
         tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active');
+            item.classList.remove(activeClass);
         });
     }
 
     function showTabContent(i = 0) {   // параметр по умолчанию, если при вызове не передаем др.аргумент
         tabsContent[i].classList.add('show', 'fade');
         tabsContent[i].classList.remove('hide');
-        tabs[i].classList.add('tabheader__item_active');
+        tabs[i].classList.add(activeClass);
     }
 
     hideTabContent();
@@ -622,7 +636,7 @@ function tabs() {
     tabsParent.addEventListener('click', (event) => {
         const target = event.target;  // если много раз используем event.target то лучше поместить его в переменную
 
-        if(target && target.classList.contains('tabheader__item')) {
+        if(target && target.classList.contains(tabsSelector.slice(1))) {
             tabs.forEach((item, i) => {
                 if (target == item) {  // когда перебираемый таб совпадет с тем на который кликнули
                     hideTabContent();
@@ -633,8 +647,7 @@ function tabs() {
     });
 }
 
-
-module.exports = tabs;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs);
 
 /***/ }),
 
@@ -642,12 +655,13 @@ module.exports = tabs;
 /*!*****************************!*\
   !*** ./js/modules/timer.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function timer() {
-     // Timer
-
-     const deadLine = '2024-05-11';  // задаем конечную дату. она так же может приходить из разных источников.
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function timer(id, deadLine) {
     
      function getTimeRemaining(endtime) {
          let days, hours, minutes, seconds;
@@ -710,10 +724,48 @@ function timer() {
          }
      }
  
-     setClock('.timer', deadLine);
+     setClock(id, deadLine);
 }
 
-module.exports = timer;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (timer);
+
+/***/ }),
+
+/***/ "./js/services/services.js":
+/*!*********************************!*\
+  !*** ./js/services/services.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getResource: () => (/* binding */ getResource),
+/* harmony export */   postData: () => (/* binding */ postData)
+/* harmony export */ });
+const postData = async (url, data) => {   // отвечает за постинг данных. После сможем ее переиспользовать с другими аргументами
+    const res = await fetch(url, {   // ждем результата работы запроса, прежде чем продолжить код, чтобы не было ошибки изза того что сервер ещё не успед ответить и в перем. ничего еще не записалось
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'  
+        },
+        body: data 
+    });
+
+    return await res.json();  // возвращаем промис сразу переводим результат в обычный объект, потом ниже сможем его обработать через then/catch
+}                             // тоже ждем результата работы метода прежде чем ретёрнить его
+
+const getResource = async (url) => {  // гет запрос поэтому передаем только ссылку на базу
+    const res = await fetch(url);     // для гет запроса не нужны доп настройки, просто получаем данные
+
+    if (!res.ok) {                    // если в запросе что-то не так пошло, то выкидываем ошибку вручную и сработает блок .catch
+        throw new Error(`Could not fetch ${url}, status ${res.status}` );  // выкинуть ошибку
+    }
+
+    return await res.json();  // возвращаем промис сразу переводим результат в обычный объект
+} 
+
+
+
 
 /***/ })
 
@@ -744,27 +796,77 @@ module.exports = timer;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
 /*!**********************!*\
   !*** ./js/script.js ***!
   \**********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
+/* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
+/* harmony import */ var _modules_cards__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js");
+/* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js");
+
+
+
+
+
+
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
-    const tabs = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
-    const timer = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
-    const slider = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
-    const modal = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
-    const forms = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
-    const cards = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js");
-    const calc = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js");
 
-    tabs();
-    timer();
-    slider();
-    modal();
-    forms();
-    cards();
-    calc();
+    // создаем таймер здесь, т.к. он используется и в модуле modal, и в forms
+    const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__.openModal)('.modal', modalTimerId), 50000); // открываем модалку через 5 сек после захода пользователя на страницу
+
+    (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__["default"])('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    (0,_modules_timer__WEBPACK_IMPORTED_MODULE_1__["default"])('.timer', '2024-11-18');
+    (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__["default"])('[data-modal]', '.modal', modalTimerId);
+    (0,_modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"])('form', modalTimerId);
+    (0,_modules_cards__WEBPACK_IMPORTED_MODULE_5__["default"])();
+    (0,_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])();
+    (0,_modules_slider__WEBPACK_IMPORTED_MODULE_2__["default"])({
+        container: '.offer__slider',
+        slide: '.offer__slide',
+        nextArrow: '.offer__slider-next',
+        prewArrow: '.offer__slider-prev', 
+        totalCounter: '#total', 
+        currentCounter: '#current', 
+        wrapper: '.offer__slider-wrapper', 
+        field: '.offer__slider-inner'
+    });
 });                                           
 
 
