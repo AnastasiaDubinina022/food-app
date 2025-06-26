@@ -11,8 +11,6 @@ import calc from './modules/calc';
 import {openModal} from './modules/modal';
 
 window.addEventListener('DOMContentLoaded', () => {
-
-    // создаем таймер здесь, т.к. он используется и в модуле modal, и в forms
     const modalTimerId = setTimeout(() => openModal('.modal', modalTimerId), 50000); // открываем модалку через 5 сек после захода пользователя на страницу
 
     tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');

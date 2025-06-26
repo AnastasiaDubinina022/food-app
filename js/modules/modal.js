@@ -6,9 +6,9 @@ function openModal(modalSelector, modalTimerId) {
     modal.classList.remove('hide');
     document.body.style.overflow = 'hidden';
 
-    console.log(modalTimerId);  // на всякий случай. придет в консоль 1 - это как раз уникальный идентификатор таймера - рандомное значение, контролируемое браузером.
+    console.log(modalTimerId);  
     if (modalTimerId) {
-        clearInterval(modalTimerId); // ниже есть сеттаймаут открывающий модалку через 5 сек как пользователь зашел. Здесь мы его очищаем в том случае, если пользователь еще раньше сам открыл модалку по нажатию кнопки и уже его видел, чтобы повторно оно не выскакивало и не бесило.
+        clearInterval(modalTimerId); 
     }
 }
 
@@ -18,7 +18,7 @@ function closeModal(modalSelector) {
     //modal.classList.toggle('show');
     modal.classList.add('hide');
     modal.classList.remove('show');
-    document.body.style.overflow = ''; // восстановить скролл при закрытии окна - браузер сам подставит значение по умолчанию.
+    document.body.style.overflow = ''; 
 }
 
 function modal(triggerSelector, modalSelector, modalTimerId) {   
@@ -26,7 +26,7 @@ function modal(triggerSelector, modalSelector, modalTimerId) {
     const modal = document.querySelector(modalSelector);
 
     modalTrigger.forEach((item) => {
-        item.addEventListener('click', () => openModal(modalSelector, modalTimerId)); // поскольку при передаче аргумента мы вызываем функцию, а здесь этого делать нельзя, оборачиваем её в стрелочную, тогда будет работать как положено - вызываться колбек только после клика.
+        item.addEventListener('click', () => openModal(modalSelector, modalTimerId)); 
     });
 
     modal.addEventListener('click', (event) => {
@@ -38,13 +38,13 @@ function modal(triggerSelector, modalSelector, modalTimerId) {
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Escape' && modal.classList.contains('show')) {
         closeModal(modalSelector);
-    } // если нажата клавиша esc при открытом модальном окне, то тогда вызываем функцию закрытия, при закрытом окне она не будет срабатывать.
+    } 
     });
     
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
             openModal(modalSelector, modalTimerId);
-            window.removeEventListener('scroll', showModalByScroll); // удаляем обработчик события после того как он отработал 1 раз, для того чтобы больше окно не высвечивалось при повторной прогрутке в конец страницы.
+            window.removeEventListener('scroll', showModalByScroll); 
 
         } // window.scrollY = window.pageYOffset (depricated)
           // document.documentElement.scrollHeight -1 = в конце добавляем -1px иначе не срабатывает - это баг, возможно связанный с некоторыми версиями браузеров или ограничениями некоторых мониторов. т.е. окно срабатывает на 1 px раньше самой нижней точки прокрутки, в этом ничего страшного.
