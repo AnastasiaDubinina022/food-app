@@ -25,14 +25,18 @@
 
 ## Setup
 
+```bash
 $ git clone https://github.com/AnastasiaDubinina022/food-app.git
 $ cd food-app
 $ npm i
 $ npx json-server db.json
 $ npx webpack
+```
 
 ## Build
 
+```bash
 It is required to set the "production" mode in the settings webpack.config.js
 
 $ npx webpack
+```
